@@ -7,13 +7,12 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 public class BPRMapper extends Mapper<LongWritable, Text, Text, Text> {
-	
-	private static final String DELIMITER = "$";
+
 	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		
 		String line = value.toString();
 		line = line.trim();
-		String [] parts = line.split(DELIMITER);
+		String [] parts = line.split(BlockPageRank.DELIMITER);
 		
 		Integer nodeId = Integer.parseInt(parts[0]);
 		Double pageRank = Double.parseDouble(parts[1]);
@@ -28,8 +27,8 @@ public class BPRMapper extends Mapper<LongWritable, Text, Text, Text> {
 		// Key: blockID
 		// Value: rank$nodeID$pageRank$outgoing_edges
 		Text outKey = new Text(blockId.toString());
-		Text outValue = new Text("PR" + DELIMITER + nodeId.toString() + DELIMITER 
-				+ pageRank.toString() + DELIMITER + edges);
+		Text outValue = new Text(BlockPageRank.PAGE_RANK + BlockPageRank.DELIMITER + nodeId.toString() 
+				+ BlockPageRank.DELIMITER + pageRank.toString() + BlockPageRank.DELIMITER + edges);
 		
 		context.write(outKey, outValue);
 		
@@ -42,22 +41,22 @@ public class BPRMapper extends Mapper<LongWritable, Text, Text, Text> {
 				
 				// If 2 nodes in same block
 				if (outgoingBlockId == blockId) {
-					outValue = new Text("BE" + DELIMITER + nodeId.toString() + DELIMITER 
-							+ e);
+					outValue = new Text(BlockPageRank.EDGES_FROM_BLOCK + BlockPageRank.DELIMITER 
+							+ nodeId.toString() + BlockPageRank.DELIMITER + e);
 				} 
 				
 				// Edge block
 				else {
 					// Page rank factor
 					Double R = new Double(pageRank/degree);
-					outValue = new Text("BC" + DELIMITER + nodeId.toString() + DELIMITER
-							+ e + DELIMITER + R.toString());
+					outValue = new Text(BlockPageRank.BOUNDARY_CONDITION + BlockPageRank.DELIMITER 
+							+ nodeId.toString() + BlockPageRank.DELIMITER
+							+ e + BlockPageRank.DELIMITER + R.toString());
 				}
 				context.write(outKey, outValue);
 			}
 		}	
 	}
-	
 	
 	public long blockIDofNode(long nodeID) {
 		
