@@ -16,12 +16,11 @@ public class BPRMapper extends Mapper<LongWritable, Text, Text, Text> {
 		
 		Integer nodeId = Integer.parseInt(parts[0]);
 		Double pageRank = Double.parseDouble(parts[1]);
-		Integer degree = Integer.parseInt(parts[2]);
 		Long blockId = blockIDofNode(nodeId);
 		String edges = "";
 		
 		if ( parts.length == 4) {
-			edges = parts[3];
+			edges = parts[2];
 		}
 		
 		// Key: blockID
@@ -48,7 +47,7 @@ public class BPRMapper extends Mapper<LongWritable, Text, Text, Text> {
 				// Edge block
 				else {
 					// Page rank factor
-					Double R = new Double(pageRank/degree);
+					Double R = new Double(pageRank/edgesArray.length);
 					outValue = new Text(BlockPageRank.BOUNDARY_CONDITION + BlockPageRank.DELIMITER 
 							+ nodeId.toString() + BlockPageRank.DELIMITER
 							+ e + BlockPageRank.DELIMITER + R.toString());
