@@ -8,12 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.lib.aggregate.LongValueSum;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class BRPReducer extends Reducer<Text, Text, Text, Text> {
+import blocked_pagerank.BlockPageRank.BPRCounters;
+
+public class BPRReducer extends Reducer<Text, Text, Text, Text> {
 	
 	private static final int MAX_ITERATIONS = 5;
-	private static final Double RESIDUAL_ERROR_THRESHOLD = 0.001;
 	private static final Double DAMPING_FACTOR = 0.85;
 	private static final int NUM_NODES = 685230;
 
@@ -66,7 +68,7 @@ public class BRPReducer extends Reducer<Text, Text, Text, Text> {
 		int numIterations = 0;
 		Double residualError = 0.0;
 		while (numIterations < MAX_ITERATIONS || 
-				residualError < RESIDUAL_ERROR_THRESHOLD) {
+				residualError < BlockPageRank.RESIDUAL_ERROR_THRESHOLD) {
 			residualError = iterateBlockOnce(allNodes, newPageRank, 
 					blockEdges, boundaryConditions);
 		}
@@ -86,8 +88,10 @@ public class BRPReducer extends Reducer<Text, Text, Text, Text> {
 			Text outKey = new Text(node.getNodeId().toString());
 			context.write(outKey, new Text(outValue));
 		}
-		
-		// TODO: Add some context residual error stuff here!!!!!!!!
+
+		// Convert residual value to long to store into counter
+		Long residualValue = (long) (residualError * BlockPageRank.COUNTER_FACTOR);
+		context.getCounter(BPRCounters.RESIDUAL_ERROR).increment(residualValue);
 		cleanup(context);
 		
 	}
