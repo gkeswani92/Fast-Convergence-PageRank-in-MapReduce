@@ -1,11 +1,13 @@
-README for input_parser.py
+README for simple/blocked_parser.py
 
-	To run input_parser.py
+	To run simple/blocked_parser.py
 
 		1) Have edges.txt in the same directory as the python file
 
-		2) Run $ python input_parser.py
+		2) Run $ python simple/blocked_parser.py
 
-		3) Collect outputs from 94_edges.txt
+		3) Collect filtered vertices list from 94_edges.txt
 
-	Our current 94_edges.txt file is located in https://s3.amazonaws.com/cs5300s16-bi49-tmm259-gk368-p2/94_edges.txt and is made public
+		4) Get the output from Simple_PageRank.txt or Blocked_PageRank.txt
+
+	Our current files are located in https://s3.amazonaws.com/cs5300s16-bi49-tmm259-gk368-p2/<xyz>.txt and is made public

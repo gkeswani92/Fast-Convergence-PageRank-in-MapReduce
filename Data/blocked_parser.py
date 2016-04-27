@@ -19,36 +19,54 @@ def selectInputLine(x):
 	return "1"
 
 def additional_process():
+	#sourceNodeID$pageRank$degree$edges
 	global start_PR
-	txt = open("test.txt")
+	txt = open("94_edges.txt")
 	cur_source_node = str(0)
-	count = 0
+	outgoing_edges = list()
 	my_map = dict()
 	line_split = list()
 	for line in txt.readlines():
 		line_split = line.split()
-		print line
+		#print line
 		if(str(line_split[0]) == cur_source_node):
-			count += 1
+			outgoing_edges.append(line_split[1])
 		else:
-			my_map[cur_source_node] = str(count)
-			count = 1
+			#if (len(outgoing_edges) == 1)
+			my_map[cur_source_node] = outgoing_edges
 			cur_source_node = str(line_split[0])
+			outgoing_edges = list()
+			outgoing_edges.append(line_split[1])
+
 	#for the last one
-	my_map[str(line_split[0])] = str(count)
-	print my_map
+	my_map[str(line_split[0])] = outgoing_edges
+	#print my_map
 	txt.close()
-	txt = open("test.txt")
-	new_file = open("Processed.txt", "w+")
+	#print "Finished Creating My Map"
+	txt = open("94_edges.txt")
+	new_file = open("Blocked_PageRank.txt", "w+")
+	map_processed = dict()
+	count = 0
+	steps = 1
 	for line in txt.readlines():
 		line_split = line.split()
-		new_line = line_split[0] + " " + line_split[1] + " " + str(start_PR) + " " + my_map[str(line_split[0])] + "\n"
+		if (line_split[0] in map_processed): continue
+		new_line = line_split[0] + "$" + str(start_PR) + "$"
+		for elt in my_map[str(line_split[0])]:
+			new_line += (elt + ",")
+		new_line = new_line[0:len(new_line)-1] + "\n"
 		new_file.write(new_line)
+		map_processed[line_split[0]] = "1"
+		count += 1
+		if (count % 5000 == 0): 
+			print "Done with " + str(5000*steps) + " Lines"
+			steps += 1
+	print "DONE WITH ALL LINES"
 	new_file.close()
 	txt.close()
 
 def main():
-	"""
+	
 	txt = open("edges.txt")
 	new_file = open("94_edges.txt", "w+")
 	count = 0
@@ -67,7 +85,7 @@ def main():
 	print "Total Vertices Seen: " + str(count)
 	print "Total in New Set: " + str(added)
 	print "Filtered In Percentage: " + str(float(added)/float(count))
-	"""
+	
 	additional_process()
 if __name__ == "__main__":
 	main()
