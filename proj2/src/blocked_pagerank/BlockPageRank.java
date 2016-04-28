@@ -21,8 +21,8 @@ public class BlockPageRank {
 	
 	public static void main(String[] args) throws Exception {
 		
-		String inputFile = "Data/input.txt";
-		String outputFile = "Data/output";
+//		String inputFile = "Data/input.txt";
+//		String outputFile = "Data/output";
 		
 		Double residualError = 0.0;
 		Integer passCount = 0;
@@ -36,18 +36,21 @@ public class BlockPageRank {
 			bprJob.setReducerClass(BPRReducer.class);
 			
 			if (passCount == 0) {
-				FileInputFormat.addInputPath(bprJob, new Path(inputFile)); 	
+				FileInputFormat.addInputPath(bprJob, new Path(args[0])); 	
 			} else {
-				FileInputFormat.addInputPath(bprJob, new Path(outputFile + "/Data"+passCount)); 
+				FileInputFormat.addInputPath(bprJob, new Path(args[1] + passCount)); 
 			}
 			
-			FileOutputFormat.setOutputPath(bprJob, new Path(outputFile + "/Data"+(passCount++)));
+			FileOutputFormat.setOutputPath(bprJob, new Path(args[1] + (++passCount)));
 			bprJob.waitForCompletion(true);
 			
 			residualError = (double) bprJob.getCounters().findCounter(BPRCounters.RESIDUAL_ERROR).getValue();
 			// Convert residual error back to double and divide by number of blocks to get average
 			residualError = residualError / (NUM_BLOCKS*COUNTER_FACTOR);
 			
+			System.out.println("Residual error for iteration " + passCount 
+					+ ": " + String.format("%.6f", residualError));
+
 			// Reset residual error counter
 			bprJob.getCounters().findCounter(BPRCounters.RESIDUAL_ERROR).setValue(0L);
 			passCount++;
