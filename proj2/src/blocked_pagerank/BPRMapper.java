@@ -5,43 +5,50 @@ import java.io.IOException;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.log4j.Logger;
 
-public class BPRMapper extends Mapper<LongWritable, Text, Text, Text> {
-
+public class BPRMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
+	
+	Logger logger = Logger.getLogger(getClass());
+	
 	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		
 		String line = value.toString();
 		line = line.trim();
-		String [] parts = line.split(BlockPageRank.DELIMITER);
+		String [] parts = line.split(BlockPageRank.DELIMITER_REGEX);
 		
 		Integer nodeId = Integer.parseInt(parts[0]);
 		Double pageRank = Double.parseDouble(parts[1]);
 		Long blockId = blockIDofNode(nodeId);
 		String edges = "";
+		logger.info("Mapper PageRank:" + pageRank);
 		
-		if ( parts.length == 4) {
+		if(parts.length == 4) {
 			edges = parts[2];
 		}
-		
+
 		// Key: blockID
 		// Value: rank$nodeID$pageRank$outgoing_edges
-		Text outKey = new Text(blockId.toString());
+		//Text outKey = new Text(blockId.toString());
+		LongWritable outKey = new LongWritable(blockId);
 		Text outValue = new Text(BlockPageRank.PAGE_RANK + BlockPageRank.DELIMITER + nodeId.toString() 
 				+ BlockPageRank.DELIMITER + pageRank.toString() + BlockPageRank.DELIMITER + edges);
-		
 		context.write(outKey, outValue);
+		logger.info("Sent out page rank request to the reducer");
 		
 		if (!edges.isEmpty()) {
 			String[] edgesArray = edges.split(",");
 			
 			for (String e: edgesArray) {
 				Long outgoingBlockId = new Long(blockIDofNode(Long.parseLong(e)));
-				outKey = new Text(outgoingBlockId.toString());
+				outKey = new LongWritable(outgoingBlockId);
+				//outKey = new Text(outgoingBlockId.toString());
 				
 				// If 2 nodes in same block
 				if (outgoingBlockId == blockId) {
 					outValue = new Text(BlockPageRank.EDGES_FROM_BLOCK + BlockPageRank.DELIMITER 
 							+ nodeId.toString() + BlockPageRank.DELIMITER + e);
+					logger.info("Sent out edges from block request to the reducer");
 				} 
 				
 				// Edge block
@@ -51,6 +58,7 @@ public class BPRMapper extends Mapper<LongWritable, Text, Text, Text> {
 					outValue = new Text(BlockPageRank.BOUNDARY_CONDITION + BlockPageRank.DELIMITER 
 							+ nodeId.toString() + BlockPageRank.DELIMITER
 							+ e + BlockPageRank.DELIMITER + R.toString());
+					logger.info("Sent out boundary conditions request to the reducer");
 				}
 				context.write(outKey, outValue);
 			}
