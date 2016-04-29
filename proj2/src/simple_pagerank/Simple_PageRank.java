@@ -1,4 +1,4 @@
-package pagerank_one;
+package simple_pagerank;
 
 import org.apache.hadoop.conf.Configuration;
 

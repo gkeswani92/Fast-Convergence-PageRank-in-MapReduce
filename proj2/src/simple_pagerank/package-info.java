@@ -2,7 +2,7 @@
  * 
  */
 /**
- * @author handeturkcapar
+ * @author batuinal
  *
  */
-package pagerank_one;
+package simple_pagerank;

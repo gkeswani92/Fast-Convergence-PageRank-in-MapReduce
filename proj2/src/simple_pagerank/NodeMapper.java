@@ -1,4 +1,4 @@
-package pagerank_one;
+package simple_pagerank;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
