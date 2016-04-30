@@ -1,11 +1,14 @@
 package blocked_pagerank;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counter;
+import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.Counters;
-import org.apache.hadoop.mapreduce.Counter;
 
 public class BlockPageRank {
 
@@ -15,8 +18,8 @@ public class BlockPageRank {
 	public static final String EDGES_FROM_BLOCK = "BE";
 	public static final String BOUNDARY_CONDITION = "BC";
 	public static final Double RESIDUAL_ERROR_THRESHOLD = 0.001;
-	public static final Integer NUM_BLOCKS = 68;
-	public static final Integer COUNTER_FACTOR = 1000000;
+	public static final Integer NUM_BLOCKS = 2;
+	public static final Integer COUNTER_FACTOR = 100000000;
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -26,22 +29,28 @@ public class BlockPageRank {
 		String outputPath = "";
 		
 		do {
+			
+			Configuration conf = new Configuration();
+			conf.set("mapreduce.output.textoutputformat.separator", ";");
+			
 			System.out.println("Current Pass Count: " + passCount);
-			Job bprJob = new Job();
+			Job bprJob = Job.getInstance(conf, "blocked_pagerank");
 			bprJob.setJobName("BPR" + passCount);
 			bprJob.setJarByClass(blocked_pagerank.BlockPageRank.class);
 			
 			// Setting the mapper and reducer for blocked page rank
 			bprJob.setMapperClass(BPRMapper.class);
 			bprJob.setReducerClass(BPRReducer.class);
-			
+			bprJob.setOutputKeyClass(LongWritable.class);
+			bprJob.setOutputValueClass(Text.class);
+
 			// Setting the input path based on the pass count
 			inputPath = passCount == 0 ? args[1]:args[2] + passCount;
 			FileInputFormat.addInputPath(bprJob, new Path(inputPath));
 			System.out.println("Setting input for pass count " + passCount + " as "+ inputPath);
 			
 			// Setting the output path based on the pass count
-			outputPath = args[2] + (++passCount);
+			outputPath = args[2] + (passCount+1);
 			FileOutputFormat.setOutputPath(bprJob, new Path(outputPath));
 			System.out.println("Setting output for pass count " + passCount + " as " + outputPath);
 			
@@ -61,7 +70,9 @@ public class BlockPageRank {
 		    Counters counters = bprJob.getCounters();
 		    Counter c1 = counters.findCounter(BPRCounter.RESIDUAL_ERROR);
 			c1.setValue(0L);
-				
+			passCount++;
+			
+			System.out.println("------------------------------------------------------------------------");
 		} while(residualError > RESIDUAL_ERROR_THRESHOLD);
 	}
 }
