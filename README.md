@@ -29,6 +29,17 @@
         2) Mapper:
 ###### Source File: NodeResidualReducer.java
         2) Reducer:
+
+### Blocked PageRank
+	Our Blocked PageRank utilizes the counters and converges in 6 map reducer iterations. Our Main, Mapper and Reducer Classes can be summarized as below:
+
+###### Source File: Block_PageRank.java
+		1) Main: 
+###### Source File: BPRMapper.java
+        2) Mapper:
+###### Source File: BPRReducer.java
+        2) Reducer:		
+
 ### Results 
 ##### - Simple PageRank - Average Residual Errors in Each MapReduce Pass
 		0) Average Residual Error's Updated Value is: 2.3270748
@@ -36,3 +47,11 @@
 		2) Average Residual Error's Updated Value is: 0.19784908
 		3) Average Residual Error's Updated Value is: 0.10070821
 		4) Average Residual Error's Updated Value is: 0.069692
+
+##### - Blocked PageRank - Average Residual Errors in Each MapReduce Pass	
+		0) Average residual error after iteration 0: 2.806003712352941
+		1) Average residual error after iteration 1: 0.038160
+		2) Average residual error after iteration 2: 0.023614
+		3) Average residual error after iteration 3: 0.009774
+		4) Average residual error after iteration 4: 0.003799
+		5) Average residual error after iteration 5: 0.000974
