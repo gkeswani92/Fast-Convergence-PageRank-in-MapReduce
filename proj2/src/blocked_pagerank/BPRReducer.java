@@ -14,7 +14,7 @@ import blocked_pagerank.BPRCounter;
 
 public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> {
 	
-	private static final int MAX_ITERATIONS = 5;
+	private static final int MAX_ITERATIONS = 20;
 	private static final Double DAMPING_FACTOR = 0.85;
 	private static final int NUM_NODES = 685230;
 	Logger logger = Logger.getLogger(getClass());
@@ -25,7 +25,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 		//logger.info("-------------------------------------");
 		//logger.info("Insider Reducer for block ID: "+key);
 		Map<Long, Double> newPageRank = new HashMap<Long, Double>();
-		List<BPRNode> allNodes = new ArrayList<BPRNode>();
+		Map<Long, BPRNode> allNodes = new HashMap<Long,BPRNode>();
 		Map<String, List<String>> blockEdges = new HashMap<String, List<String>>();
 		Map<String, Double> boundaryConditions = new HashMap<String, Double>();
 		
@@ -41,6 +41,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 				node.setNodeId(Long.parseLong(input[1]));
 				node.setPageRank(Double.parseDouble(input[2]));
 				newPageRank.put(node.getNodeId(), node.getPageRank());
+				//logger.info("Received page rank from mapper:"+Double.parseDouble(input[2]));
 				
 				if (input.length == 4) {
 					node.setEdges(input[3]);
@@ -48,8 +49,8 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 				}
 				
 				// Maintaining a list of all nodes in the current block
-				allNodes.add(node);
-				//logger.info("Received page rank from mapper:"+Double.parseDouble(input[2]));
+				allNodes.put(node.getNodeId(), node);
+				
 			} else if (BlockPageRank.EDGES_FROM_BLOCK.equals(input[0])) {
 				//logger.info("Inside edges from block");
 				
@@ -86,7 +87,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			//logger.info("In block residual error is " + residualError);
 
 			residualError = 0.0;
-			for (BPRNode node : allNodes) {
+			for (BPRNode node : allNodes.values()) {
 				residualError += Math.abs((newPageRank.get(node.getNodeId()) - node.getPageRank())) / newPageRank.get(node.getNodeId());
 			}
 			//logger.info("All node residual error is " + residualError);
@@ -94,7 +95,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			residualError = residualError / allNodes.size();
 			//logger.info("Average residual error is " + residualError);
 
-			for (BPRNode node : allNodes) {
+			for (BPRNode node : allNodes.values()) {
 				String outValue = node.getNodeId() + BlockPageRank.DELIMITER + newPageRank.get(node.getNodeId())
 						+ BlockPageRank.DELIMITER + node.getEdges();
 				//logger.info("Emitting from reducer: " + outValue);
@@ -112,12 +113,12 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 		}
 	}
 	
-	private Double iterateBlockOnce(List<BPRNode> allNodes, Map<Long, Double> newPageRank, Map<String, List<String>> blockEdges, Map<String, Double> boundaryConditions) {
+	private Double iterateBlockOnce(Map<Long,BPRNode> allNodes, Map<Long, Double> newPageRank, Map<String, List<String>> blockEdges, Map<String, Double> boundaryConditions) {
 		
 		Double residualError = 0.0;
 		Map<Long, Double> PRMap = new HashMap<Long, Double>();
 		
-		for(BPRNode node: allNodes) {
+		for(BPRNode node: allNodes.values()) {
 			//logger.info("Current node id: "+node.getNodeId());
 			
 			// Get the old page rank from the past run's page rank
@@ -161,14 +162,10 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 		return residualError;
 	}
 	
-	private BPRNode getNodeFromId(List<BPRNode> allNodes, String node) {
-		
-		for(BPRNode n: allNodes) {
-			if(n.getNodeId().equals(Long.parseLong(node))) {
-				return n;
-			}
+	private BPRNode getNodeFromId(Map<Long,BPRNode> allNodes, String node) {
+		if(allNodes.containsKey(Long.parseLong(node))){
+			return allNodes.get(Long.parseLong(node));
 		}
-		
 		return null;
 	}
 }
