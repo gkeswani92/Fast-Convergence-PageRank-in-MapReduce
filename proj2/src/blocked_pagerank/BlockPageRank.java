@@ -24,6 +24,8 @@ public class BlockPageRank {
 	public static void main(String[] args) throws Exception {
 		
 		Double residualError = 0.0;
+		Double averageResidualError = 0.0;
+		Double actualResidualError = 0.0;
 		Integer passCount = 0;
 		String inputPath = "";
 		String outputPath = "";
@@ -59,12 +61,17 @@ public class BlockPageRank {
 			
 			// Get the current residual error
 			residualError = (double) bprJob.getCounters().findCounter(BPRCounter.RESIDUAL_ERROR).getValue();
-			System.out.println("Residual error after map reduce iteration is "+residualError);
+			System.out.println("Residual error after map reduce iteration is: "+residualError);
 			
 			// Convert residual error back to double and divide by number of blocks to get average
-			residualError = residualError / (NUM_BLOCKS*COUNTER_FACTOR);
-			System.out.println("Residual error for iteration " + passCount 
-					+ ": " + String.format("%.6f", residualError));
+			actualResidualError = residualError / COUNTER_FACTOR;
+			System.out.println("Actual residual error with counter factor: "+actualResidualError);
+			
+			averageResidualError = actualResidualError / NUM_BLOCKS;
+			System.out.println("Average residual error with num blocks: "+averageResidualError);
+			
+			System.out.println("Final Residual error for iteration " + passCount 
+					+ ": " + String.format("%.6f", averageResidualError));
 
 			// Reset residual error counter
 		    Counters counters = bprJob.getCounters();
@@ -73,6 +80,6 @@ public class BlockPageRank {
 			passCount++;
 			
 			System.out.println("------------------------------------------------------------------------");
-		} while(residualError > RESIDUAL_ERROR_THRESHOLD);
+		} while(averageResidualError > RESIDUAL_ERROR_THRESHOLD);
 	}
 }

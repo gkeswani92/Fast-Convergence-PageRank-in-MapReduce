@@ -29,6 +29,9 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 		Map<String, List<String>> blockEdges = new HashMap<String, List<String>>();
 		Map<String, Double> boundaryConditions = new HashMap<String, Double>();
 		
+		Map<String, Long> minNodes = new HashMap<String, Long>();
+		minNodes.put("minimum", Long.MAX_VALUE);
+		minNodes.put("second_minimum", Long.MAX_VALUE);
 		
 		for(Text t: values){
 			String [] input = t.toString().split(BlockPageRank.DELIMITER_REGEX);
@@ -50,6 +53,14 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 				
 				// Maintaining a list of all nodes in the current block
 				allNodes.put(node.getNodeId(), node);
+				
+				// Keeping tracking of the two minimum nodes in this block
+				if(node.getNodeId().compareTo(minNodes.get("minimum")) < 0){
+					minNodes.put("second_minimum", minNodes.get("minimum"));
+					minNodes.put("minimum", node.getNodeId());
+				} else if(node.getNodeId().compareTo(minNodes.get("second_minimum")) < 0){
+					minNodes.put("second_minimum", node.getNodeId());
+				} 
 				
 			} else if (BlockPageRank.EDGES_FROM_BLOCK.equals(input[0])) {
 				//logger.info("Inside edges from block");
@@ -110,6 +121,9 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			//logger.info("Value being written to counter is " + residualValue);
 			context.getCounter(BPRCounter.RESIDUAL_ERROR).increment(residualValue);
 			cleanup(context);
+			
+			logger.info("Page Rank of Node 0 i.e. Node ID : " + allNodes.get(minNodes.get("minimum")).getNodeId().toString() + " in block "+ key + " is :" + allNodes.get(minNodes.get("minimum")).getPageRank().toString());
+			logger.info("Page Rank of Node 1 i.e. Node ID : " + allNodes.get(minNodes.get("second_minimum")).getNodeId().toString() + " in block "+ key + " is :" + allNodes.get(minNodes.get("second_minimum")).getPageRank().toString());
 		}
 	}
 	
