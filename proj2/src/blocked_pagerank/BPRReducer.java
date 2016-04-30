@@ -119,6 +119,8 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			context.getCounter(BPRCounter.RESIDUAL_ERROR).increment(residualValue);
 			cleanup(context);
 			
+			logger.info("");
+			logger.info("Number of iterations in block " + key + " to coverge: " + numIterations);
 			logger.info("Page Rank of Node 0 i.e. Node ID : " + allNodes.get(minNodes.get("minimum")).getNodeId().toString() + " in block "+ key + " is :" + allNodes.get(minNodes.get("minimum")).getPageRank().toString());
 			logger.info("Page Rank of Node 1 i.e. Node ID : " + allNodes.get(minNodes.get("second_minimum")).getNodeId().toString() + " in block "+ key + " is :" + allNodes.get(minNodes.get("second_minimum")).getPageRank().toString());
 		}
