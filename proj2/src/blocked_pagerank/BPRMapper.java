@@ -27,10 +27,10 @@ public class BPRMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
 		
 		// Get node, page rank and edges information from the file
 		String [] parts = line.split(Constants.DELIMITER_REGEX);
-		Integer nodeId = Integer.parseInt(parts[0]);
+		Long nodeId = Long.parseLong(parts[0]);
 		Double pageRank = Double.parseDouble(parts[1]);
 		String edges = parts.length == 3 ? parts[2]:"";
-		Long blockId = blockIDofNode(nodeId);
+		Long blockId = blockIDofNode(nodeId, false);
 
 		// For PAGERANK MESSAGE
 		// Key: blockID of current node
@@ -47,7 +47,7 @@ public class BPRMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
 			for (String e: edgesArray) {
 				
 				// Find the block id of the destination node
-				Long outgoingBlockId = new Long(blockIDofNode(Long.parseLong(e)));
+				Long outgoingBlockId = new Long(blockIDofNode(Long.parseLong(e), false));
 				outKey = new LongWritable(outgoingBlockId);
 				
 				// If 2 nodes in same block, this is an internal page rank transfer
@@ -74,23 +74,29 @@ public class BPRMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
 		}	
 	}
 	
-	public long blockIDofNode(long nodeID) {
+	public long blockIDofNode(Long nodeID, Boolean random) {
 		
-		int[] blocks = { 0, 10328, 20373, 30629, 40645,
-				50462, 60841, 70591, 80118, 90497, 100501, 110567, 120945,
-				130999, 140574, 150953, 161332, 171154, 181514, 191625, 202004,
-				212383, 222762, 232593, 242878, 252938, 263149, 273210, 283473,
-				293255, 303043, 313370, 323522, 333883, 343663, 353645, 363929,
-				374236, 384554, 394929, 404712, 414617, 424747, 434707, 444489,
-				454285, 464398, 474196, 484050, 493968, 503752, 514131, 524510,
-				534709, 545088, 555467, 565846, 576225, 586604, 596585, 606367,
-				616148, 626448, 636240, 646022, 655804, 665666, 675448, 685230 };
-
-		int blockID = (int) Math.floor(nodeID / 10000);
-		int boundary = blocks[blockID];
-		if (nodeID < boundary) {
-			blockID--;
-		}
-		return blockID;
+		// Partitioning according to the blocks given in the original file
+		// if not random. Else, using java hash code function to partition
+		// the nodes
+		if(random == false){
+			int[] blocks = { 0, 10328, 20373, 30629, 40645,
+					50462, 60841, 70591, 80118, 90497, 100501, 110567, 120945,
+					130999, 140574, 150953, 161332, 171154, 181514, 191625, 202004,
+					212383, 222762, 232593, 242878, 252938, 263149, 273210, 283473,
+					293255, 303043, 313370, 323522, 333883, 343663, 353645, 363929,
+					374236, 384554, 394929, 404712, 414617, 424747, 434707, 444489,
+					454285, 464398, 474196, 484050, 493968, 503752, 514131, 524510,
+					534709, 545088, 555467, 565846, 576225, 586604, 596585, 606367,
+					616148, 626448, 636240, 646022, 655804, 665666, 675448, 685230 };
+	
+			int blockID = (int) Math.floor(nodeID / 10000);
+			int boundary = blocks[blockID];
+			if (nodeID < boundary) {
+				blockID--;
+			}
+			return blockID;
+		} else
+			return nodeID.toString().hashCode() % Constants.NUM_BLOCKS;
 	}
 }
