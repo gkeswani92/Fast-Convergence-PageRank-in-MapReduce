@@ -1,4 +1,4 @@
-package jacobi_pagerank;
+package gaussseidel_pagerank;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -13,7 +13,7 @@ import utils.CustomCounter;
 import utils.Constants;
 import blocked_pagerank.BPRMapper;
 
-public class JacobiPageRank {
+public class GaussSeidelPageRank {
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -33,11 +33,11 @@ public class JacobiPageRank {
 			System.out.println("Current Pass Count: " + passCount);
 			Job jacobiJob = Job.getInstance(conf, "jacobi_pagerank");
 			jacobiJob.setJobName("Jacobi" + passCount);
-			jacobiJob.setJarByClass(jacobi_pagerank.JacobiPageRank.class);
+			jacobiJob.setJarByClass(gaussseidel_pagerank.GaussSeidelPageRank.class);
 			
 			// Setting the mapper and reducer for blocked page rank
 			jacobiJob.setMapperClass(BPRMapper.class);
-			jacobiJob.setReducerClass(JacobiReducer.class);
+			jacobiJob.setReducerClass(GaussSeidelReducer.class);
 			jacobiJob.setOutputKeyClass(LongWritable.class);
 			jacobiJob.setOutputValueClass(Text.class);
 
