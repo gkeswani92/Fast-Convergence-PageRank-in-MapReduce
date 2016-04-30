@@ -18,7 +18,7 @@ public class BlockPageRank {
 	public static final String EDGES_FROM_BLOCK = "BE";
 	public static final String BOUNDARY_CONDITION = "BC";
 	public static final Double RESIDUAL_ERROR_THRESHOLD = 0.001;
-	public static final Integer NUM_BLOCKS = 2;
+	public static final Integer NUM_BLOCKS = 68;
 	public static final Integer COUNTER_FACTOR = 100000000;
 	
 	public static void main(String[] args) throws Exception {
