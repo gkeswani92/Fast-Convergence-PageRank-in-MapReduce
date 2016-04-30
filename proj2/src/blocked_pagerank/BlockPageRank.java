@@ -11,15 +11,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class BlockPageRank {
-
-	public static final String DELIMITER = "$";
-	public static final String DELIMITER_REGEX = "\\$";
-	public static final String PAGE_RANK = "PR";
-	public static final String EDGES_FROM_BLOCK = "BE";
-	public static final String BOUNDARY_CONDITION = "BC";
-	public static final Double RESIDUAL_ERROR_THRESHOLD = 0.001;
-	public static final Integer NUM_BLOCKS = 68;
-	public static final Integer COUNTER_FACTOR = 100000000;
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -64,10 +55,10 @@ public class BlockPageRank {
 			System.out.println("Residual error after map reduce iteration is: "+residualError);
 			
 			// Convert residual error back to double and divide by number of blocks to get average
-			actualResidualError = residualError / COUNTER_FACTOR;
+			actualResidualError = residualError / Constants.COUNTER_FACTOR;
 			System.out.println("Actual residual error with counter factor: "+actualResidualError);
 			
-			averageResidualError = actualResidualError / NUM_BLOCKS;
+			averageResidualError = actualResidualError / Constants.NUM_BLOCKS;
 			System.out.println("Average residual error with num blocks: "+averageResidualError);
 			
 			System.out.println("Final Residual error for iteration " + passCount 
@@ -80,6 +71,6 @@ public class BlockPageRank {
 			passCount++;
 			
 			System.out.println("------------------------------------------------------------------------");
-		} while(averageResidualError > RESIDUAL_ERROR_THRESHOLD);
+		} while(averageResidualError > Constants.RESIDUAL_ERROR_THRESHOLD);
 	}
 }

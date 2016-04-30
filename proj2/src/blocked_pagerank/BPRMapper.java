@@ -1,6 +1,7 @@
 package blocked_pagerank;
 
 import java.io.IOException;
+
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -23,7 +24,7 @@ public class BPRMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
 		//logger.info("Filtered value: "+value.toString());
 		
 		// Get node, page rank and edges information from the file
-		String [] parts = line.split(BlockPageRank.DELIMITER_REGEX);
+		String [] parts = line.split(Constants.DELIMITER_REGEX);
 		Integer nodeId = Integer.parseInt(parts[0]);
 		Double pageRank = Double.parseDouble(parts[1]);
 		String edges = parts.length == 3 ? parts[2]:"";
@@ -33,8 +34,8 @@ public class BPRMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
 		// Key: blockID of current node
 		// Value: PR$nodeID$pageRank$outgoing_edges
 		LongWritable outKey = new LongWritable(blockId);
-		Text outValue = new Text(BlockPageRank.PAGE_RANK + BlockPageRank.DELIMITER + nodeId.toString() 
-				+ BlockPageRank.DELIMITER + pageRank.toString() + BlockPageRank.DELIMITER + edges);
+		Text outValue = new Text(Constants.PAGE_RANK + Constants.DELIMITER + nodeId.toString() 
+				+ Constants.DELIMITER + pageRank.toString() + Constants.DELIMITER + edges);
 		context.write(outKey, outValue);
 		
 		// Do this only if we have outgoing edges from the current node
@@ -50,8 +51,8 @@ public class BPRMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
 				// If 2 nodes in same block, this is an internal page rank transfer
 				// Value: BE$sourceID$destinationID
 				if (outgoingBlockId.equals(blockId)) {
-					outValue = new Text(BlockPageRank.EDGES_FROM_BLOCK + BlockPageRank.DELIMITER 
-							+ nodeId.toString() + BlockPageRank.DELIMITER + e);
+					outValue = new Text(Constants.EDGES_FROM_BLOCK + Constants.DELIMITER 
+							+ nodeId.toString() + Constants.DELIMITER + e);
 					//logger.info("Edge between 2 nodes in the same block");
 				} 
 				
@@ -61,9 +62,9 @@ public class BPRMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
 					// Key: blockID of current node
 					// Value: BC$sourceID$destinationID$PR_factor
 					Double R = new Double(pageRank/edgesArray.length);
-					outValue = new Text(BlockPageRank.BOUNDARY_CONDITION + BlockPageRank.DELIMITER 
-							+ nodeId.toString() + BlockPageRank.DELIMITER
-							+ e + BlockPageRank.DELIMITER + R.toString());
+					outValue = new Text(Constants.BOUNDARY_CONDITION + Constants.DELIMITER 
+							+ nodeId.toString() + Constants.DELIMITER
+							+ e + Constants.DELIMITER + R.toString());
 					//logger.info("Edge between 2 nodes in different blocks");
 				}
 				context.write(outKey, outValue);

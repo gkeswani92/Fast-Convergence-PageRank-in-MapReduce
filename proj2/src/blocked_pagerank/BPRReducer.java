@@ -14,9 +14,6 @@ import blocked_pagerank.BPRCounter;
 
 public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> {
 	
-	private static final int MAX_ITERATIONS = 20;
-	private static final Double DAMPING_FACTOR = 0.85;
-	private static final int NUM_NODES = 685230;
 	Logger logger = Logger.getLogger(getClass());
 
 	protected void reduce(LongWritable key, Iterable<Text> values, Context context)
@@ -34,10 +31,10 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 		minNodes.put("second_minimum", Long.MAX_VALUE);
 		
 		for(Text t: values){
-			String [] input = t.toString().split(BlockPageRank.DELIMITER_REGEX);
+			String [] input = t.toString().split(Constants.DELIMITER_REGEX);
 			
 			// A message received by the reducer can be a PR, BE or BC
-			if (BlockPageRank.PAGE_RANK.equals(input[0])) {
+			if (Constants.PAGE_RANK.equals(input[0])) {
 				
 				// Create new node, set node id, page rank, edges and degree
 				BPRNode node = new BPRNode();
@@ -62,7 +59,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 					minNodes.put("second_minimum", node.getNodeId());
 				} 
 				
-			} else if (BlockPageRank.EDGES_FROM_BLOCK.equals(input[0])) {
+			} else if (Constants.EDGES_FROM_BLOCK.equals(input[0])) {
 				//logger.info("Inside edges from block");
 				
 				// Creates a list of edges coming into each node
@@ -73,7 +70,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 				} else {
 					blockEdges.get(input[2]).add(input[1]);
 				}
-			} else if (BlockPageRank.BOUNDARY_CONDITION.equals(input[0])) {
+			} else if (Constants.BOUNDARY_CONDITION.equals(input[0])) {
 				//logger.info("Inside boundary condition");
 				
 				// Maintains a mapping of the collective page rank coming in to a node
@@ -91,7 +88,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			Double residualError = Double.MAX_VALUE;
 			
 			// Iterate over block until error < threshold or numIterations > custom limit
-			while (numIterations < MAX_ITERATIONS && residualError > BlockPageRank.RESIDUAL_ERROR_THRESHOLD) {
+			while (numIterations < Constants.MAX_ITERATIONS && residualError > Constants.RESIDUAL_ERROR_THRESHOLD) {
 				residualError = iterateBlockOnce(allNodes, newPageRank, blockEdges, boundaryConditions);
 				numIterations++;
 			}
@@ -107,8 +104,8 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			//logger.info("Average residual error is " + residualError);
 
 			for (BPRNode node : allNodes.values()) {
-				String outValue = node.getNodeId() + BlockPageRank.DELIMITER + newPageRank.get(node.getNodeId())
-						+ BlockPageRank.DELIMITER + node.getEdges();
+				String outValue = node.getNodeId() + Constants.DELIMITER + newPageRank.get(node.getNodeId())
+						+ Constants.DELIMITER + node.getEdges();
 				//logger.info("Emitting from reducer: " + outValue);
 				
 				// Text outKey = new Text(node.getNodeId().toString());
@@ -117,7 +114,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			}
 
 			// Convert residual value to long to store into counter
-			Long residualValue = (long) (residualError * BlockPageRank.COUNTER_FACTOR);
+			Long residualValue = (long) (residualError * Constants.COUNTER_FACTOR);
 			//logger.info("Value being written to counter is " + residualValue);
 			context.getCounter(BPRCounter.RESIDUAL_ERROR).increment(residualValue);
 			cleanup(context);
@@ -162,7 +159,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			}
 			
 			//logger.info("New Page Rank before damping: " + newPR);
-			newPR = (newPR * DAMPING_FACTOR) + (0.15/NUM_NODES);
+			newPR = (newPR * Constants.DAMPING_FACTOR) + (0.15/Constants.NUM_NODES);
 			//logger.info("New Page Rank after damping: " + newPR);
 			PRMap.put(node.getNodeId(), newPR);
 			residualError += Math.abs(newPR - oldPR) / newPR;
