@@ -26,7 +26,7 @@ public class Simple_PageRank {
 
       Job job = Job.getInstance(conf, "simple_pagerank");
       //Set Jar Class
-      job.setJarByClass(pagerank_one.Simple_PageRank.class);
+      job.setJarByClass(simple_pagerank.Simple_PageRank.class);
       //Set Maper and Reducer
       job.setMapperClass(NodeMapper.class);
       job.setReducerClass(NodeResidualReducer.class);

@@ -1,6 +1,6 @@
-package blocked_pagerank;
+package utils;
 
-public class BPRNode {
+public class Node {
 
 	Long nodeId;
 	String edges;

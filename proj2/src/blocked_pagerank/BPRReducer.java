@@ -10,7 +10,9 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.log4j.Logger;
 
-import blocked_pagerank.BPRCounter;
+import utils.CustomCounter;
+import utils.Node;
+import utils.Constants;
 
 public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> {
 	
@@ -22,7 +24,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 		//logger.info("-------------------------------------");
 		//logger.info("Insider Reducer for block ID: "+key);
 		Map<Long, Double> newPageRank = new HashMap<Long, Double>();
-		Map<Long, BPRNode> allNodes = new HashMap<Long,BPRNode>();
+		Map<Long, Node> allNodes = new HashMap<Long,Node>();
 		Map<String, List<String>> blockEdges = new HashMap<String, List<String>>();
 		Map<String, Double> boundaryConditions = new HashMap<String, Double>();
 		
@@ -37,7 +39,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			if (Constants.PAGE_RANK.equals(input[0])) {
 				
 				// Create new node, set node id, page rank, edges and degree
-				BPRNode node = new BPRNode();
+				Node node = new Node();
 				node.setNodeId(Long.parseLong(input[1]));
 				node.setPageRank(Double.parseDouble(input[2]));
 				newPageRank.put(node.getNodeId(), node.getPageRank());
@@ -95,7 +97,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			//logger.info("In block residual error is " + residualError);
 
 			residualError = 0.0;
-			for (BPRNode node : allNodes.values()) {
+			for (Node node : allNodes.values()) {
 				residualError += Math.abs((newPageRank.get(node.getNodeId()) - node.getPageRank())) / newPageRank.get(node.getNodeId());
 			}
 			//logger.info("All node residual error is " + residualError);
@@ -103,7 +105,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			residualError = residualError / allNodes.size();
 			//logger.info("Average residual error is " + residualError);
 
-			for (BPRNode node : allNodes.values()) {
+			for (Node node : allNodes.values()) {
 				String outValue = node.getNodeId() + Constants.DELIMITER + newPageRank.get(node.getNodeId())
 						+ Constants.DELIMITER + node.getEdges();
 				//logger.info("Emitting from reducer: " + outValue);
@@ -116,7 +118,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			// Convert residual value to long to store into counter
 			Long residualValue = (long) (residualError * Constants.COUNTER_FACTOR);
 			//logger.info("Value being written to counter is " + residualValue);
-			context.getCounter(BPRCounter.RESIDUAL_ERROR).increment(residualValue);
+			context.getCounter(CustomCounter.RESIDUAL_ERROR).increment(residualValue);
 			cleanup(context);
 			
 			logger.info("");
@@ -126,12 +128,12 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 		}
 	}
 	
-	private Double iterateBlockOnce(Map<Long,BPRNode> allNodes, Map<Long, Double> newPageRank, Map<String, List<String>> blockEdges, Map<String, Double> boundaryConditions) {
+	private Double iterateBlockOnce(Map<Long,Node> allNodes, Map<Long, Double> newPageRank, Map<String, List<String>> blockEdges, Map<String, Double> boundaryConditions) {
 		
 		Double residualError = 0.0;
 		Map<Long, Double> PRMap = new HashMap<Long, Double>();
 		
-		for(BPRNode node: allNodes.values()) {
+		for(Node node: allNodes.values()) {
 			//logger.info("Current node id: "+node.getNodeId());
 			
 			// Get the old page rank from the past run's page rank
@@ -148,7 +150,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 					
 					// Get the source node of the incoming edge and 
 					// calculate its page rank contribution to mine
-					BPRNode n = getNodeFromId(allNodes, edge);
+					Node n = getNodeFromId(allNodes, edge);
 					newPR += newPageRank.get(Long.parseLong(edge))/n.getDegree();
 				}
 			}
@@ -175,7 +177,7 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 		return residualError;
 	}
 	
-	private BPRNode getNodeFromId(Map<Long,BPRNode> allNodes, String node) {
+	private Node getNodeFromId(Map<Long,Node> allNodes, String node) {
 		if(allNodes.containsKey(Long.parseLong(node))){
 			return allNodes.get(Long.parseLong(node));
 		}

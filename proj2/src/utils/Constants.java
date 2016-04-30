@@ -1,4 +1,4 @@
-package blocked_pagerank;
+package utils;
 
 public class Constants {
 
