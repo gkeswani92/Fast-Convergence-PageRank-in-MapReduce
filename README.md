@@ -55,3 +55,17 @@
 		3) Average residual error after iteration 3: 0.009774
 		4) Average residual error after iteration 4: 0.003799
 		5) Average residual error after iteration 5: 0.000974
+
+##### - Blocked PageRank With Random Partitioning - Average Residual Errors in Each MapReduce Pass	
+		0) Average residual error after iteration 0: 2.338398
+		1) Average residual error after iteration 1: 0.320930
+		2) Average residual error after iteration 2: 0.190345
+		3) Average residual error after iteration 3: 0.092883
+		4) Average residual error after iteration 4: 0.061320
+		5) Average residual error after iteration 5: 0.033192
+		6) Average residual error after iteration 6: 0.026360
+		7) Average residual error after iteration 7: 0.016122
+		8) Average residual error after iteration 8: 0.013767
+		9) Average residual error after iteration 9: 0.009408
+		10) Average residual error after iteration 10: 0.008029 
+		
