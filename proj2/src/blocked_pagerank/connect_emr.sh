@@ -1,0 +1,1 @@
+ssh -i Blocked_PageRank.pem hadoop@ec2-54-82-237-80.compute-1.amazonaws.com
