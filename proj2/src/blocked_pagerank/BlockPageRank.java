@@ -23,15 +23,15 @@ public class BlockPageRank {
 		Integer passCount = 0;
 		String inputPath = "";
 		String outputPath = "";
-		
+		Long iterations = (long)0;
 		Configuration conf = new Configuration();
 		conf.set("mapreduce.output.textoutputformat.separator", ";");
-		Job bprJob = Job.getInstance(conf, "blocked_pagerank");
+		Job bprJob = null;
 
 		
 		do {
-			
 			System.out.println("Current Pass Count: " + passCount);
+			bprJob = Job.getInstance(conf, "blocked_pagerank");
 			bprJob.setJobName("BPR" + passCount);
 			bprJob.setJarByClass(blocked_pagerank.BlockPageRank.class);
 			
@@ -74,20 +74,22 @@ public class BlockPageRank {
 			c1.setValue(0L);
 			passCount++;
 			
+			iterations += (bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_1).getValue() +
+							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_2).getValue()+
+							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_3).getValue()+
+							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_4).getValue()+
+							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_5).getValue()+
+							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_6).getValue()+
+							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_7).getValue()+
+							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_8).getValue()+
+							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_9).getValue()+
+							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_10).getValue());
+			System.out.println("Number of iterations: "+iterations);
+			
 			System.out.println("------------------------------------------------------------------------");
 		} while(averageResidualError > Constants.RESIDUAL_ERROR_THRESHOLD);
 		
-		Long avg = (bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_1).getValue() +
-				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_2).getValue()+
-				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_3).getValue()+
-				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_4).getValue()+
-				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_5).getValue()+
-				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_6).getValue()+
-				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_7).getValue()+
-				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_8).getValue()+
-				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_9).getValue()+
-				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_10).getValue())/passCount;
-		
-		System.out.println("Average iterations count: " + avg);
+		Double avg = iterations * 1.00000 / passCount;
+		System.out.println("Average iterations count for Jacobi: " + avg);
 	}
 }

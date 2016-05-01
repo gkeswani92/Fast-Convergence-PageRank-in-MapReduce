@@ -130,8 +130,6 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 			CustomCounter cc = getCustomCounter(Long.parseLong(key.toString()));
 			if (cc != null) {
 				context.getCounter(cc).increment(numIterations);
-			} else {
-				context.getCounter(cc).increment(0);
 			}
 			cleanup(context);
 
@@ -205,25 +203,25 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 	}
 	
 	public CustomCounter getCustomCounter (Long blockId) {
-		if (blockId.equals(0)) {
+		if (blockId.equals((long)0)) {
 			return CustomCounter.ITERATIONS_BLOCK_1;
-		} else if (blockId.equals(1)){
+		} else if (blockId.equals((long)1)){
 			return CustomCounter.ITERATIONS_BLOCK_2;
-		} else if (blockId.equals(2)){
+		} else if (blockId.equals((long)2)){
 			return CustomCounter.ITERATIONS_BLOCK_3;
-		} else if (blockId.equals(3)){
+		} else if (blockId.equals((long)3)){
 			return CustomCounter.ITERATIONS_BLOCK_4;
-		} else if (blockId.equals(4)){
+		} else if (blockId.equals((long)4)){
 			return CustomCounter.ITERATIONS_BLOCK_5;
-		} else if (blockId.equals(5)){
+		} else if (blockId.equals((long)5)){
 			return CustomCounter.ITERATIONS_BLOCK_6;
-		} else if (blockId.equals(6)){
+		} else if (blockId.equals((long)6)){
 			return CustomCounter.ITERATIONS_BLOCK_7;
-		} else if (blockId.equals(7)){
+		} else if (blockId.equals((long)7)){
 			return CustomCounter.ITERATIONS_BLOCK_8;
-		} else if (blockId.equals(8)){
+		} else if (blockId.equals((long)8)){
 			return CustomCounter.ITERATIONS_BLOCK_9;
-		} else if (blockId.equals(9)){
+		} else if (blockId.equals((long)9)){
 			return CustomCounter.ITERATIONS_BLOCK_10;
 		} else {
 			return null;

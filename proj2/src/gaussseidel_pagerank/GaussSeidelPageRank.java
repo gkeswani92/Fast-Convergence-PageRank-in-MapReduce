@@ -26,12 +26,13 @@ public class GaussSeidelPageRank {
 		String outputPath = "";
 		Configuration conf = new Configuration();
 		conf.set("mapreduce.output.textoutputformat.separator", ";");
-		Job gaussSeidelJob = Job.getInstance(conf, "jacobi_pagerank");
+		Job gaussSeidelJob = null;
+		Long iterations = (long) 0;
 
 		do {
 
 			System.out.println("Current Pass Count: " + passCount);
-
+			gaussSeidelJob = Job.getInstance(conf, "jacobi_pagerank");
 			gaussSeidelJob.setJobName("Gauss Seidel " + passCount);
 			gaussSeidelJob.setJarByClass(gaussseidel_pagerank.GaussSeidelPageRank.class);
 
@@ -74,22 +75,24 @@ public class GaussSeidelPageRank {
 			Counter c1 = counters.findCounter(CustomCounter.RESIDUAL_ERROR);
 			c1.setValue(0L);
 			passCount++;
-
+			
+			iterations += (gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_1).getValue() +
+					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_2).getValue()+
+					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_3).getValue()+
+					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_4).getValue()+
+					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_5).getValue()+
+					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_6).getValue()+
+					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_7).getValue()+
+					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_8).getValue()+
+					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_9).getValue()+
+					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_10).getValue());
+			
+			System.out.println("Number of iterations: "+iterations);
 			System.out.println("------------------------------------------------------------------------");
 		} while (averageResidualError > Constants.RESIDUAL_ERROR_THRESHOLD);
 		
-		Long avg = (gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_1).getValue() +
-				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_2).getValue()+
-				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_3).getValue()+
-				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_4).getValue()+
-				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_5).getValue()+
-				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_6).getValue()+
-				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_7).getValue()+
-				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_8).getValue()+
-				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_9).getValue()+
-				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_10).getValue())/passCount;
-		
-		System.out.println("Average iterations count: " + avg);
+		Double avg = iterations * 1.000000 /passCount;
+		System.out.println("Average iterations count for Gauss Seidel: " + avg);
 
 		
 	}
