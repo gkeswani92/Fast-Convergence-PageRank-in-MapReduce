@@ -9,6 +9,7 @@ import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
 import utils.CustomCounter;
 import utils.Constants;
 
@@ -23,13 +24,14 @@ public class BlockPageRank {
 		String inputPath = "";
 		String outputPath = "";
 		
+		Configuration conf = new Configuration();
+		conf.set("mapreduce.output.textoutputformat.separator", ";");
+		Job bprJob = Job.getInstance(conf, "blocked_pagerank");
+
+		
 		do {
 			
-			Configuration conf = new Configuration();
-			conf.set("mapreduce.output.textoutputformat.separator", ";");
-			
 			System.out.println("Current Pass Count: " + passCount);
-			Job bprJob = Job.getInstance(conf, "blocked_pagerank");
 			bprJob.setJobName("BPR" + passCount);
 			bprJob.setJarByClass(blocked_pagerank.BlockPageRank.class);
 			
@@ -74,5 +76,18 @@ public class BlockPageRank {
 			
 			System.out.println("------------------------------------------------------------------------");
 		} while(averageResidualError > Constants.RESIDUAL_ERROR_THRESHOLD);
+		
+		Long avg = (bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_1).getValue() +
+				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_2).getValue()+
+				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_3).getValue()+
+				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_4).getValue()+
+				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_5).getValue()+
+				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_6).getValue()+
+				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_7).getValue()+
+				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_8).getValue()+
+				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_9).getValue()+
+				bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_10).getValue())/passCount;
+		
+		System.out.println("Average iterations count: " + avg);
 	}
 }

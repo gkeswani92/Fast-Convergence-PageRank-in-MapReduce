@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.log4j.Logger;
+
 import utils.Constants;
 import utils.CustomCounter;
 import utils.Node;
@@ -124,6 +126,13 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 			Long residualValue = (long) (residualError * Constants.COUNTER_FACTOR);
 			//logger.info("Value being written to counter is " + residualValue);
 			context.getCounter(CustomCounter.RESIDUAL_ERROR).increment(residualValue);
+			
+			CustomCounter cc = getCustomCounter(Long.parseLong(key.toString()));
+			if (cc != null) {
+				context.getCounter(cc).increment(numIterations);
+			} else {
+				context.getCounter(cc).increment(0);
+			}
 			cleanup(context);
 
 			// logger.info("");
@@ -193,5 +202,31 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 			return allNodes.get(Long.parseLong(node));
 		}
 		return null;
+	}
+	
+	public CustomCounter getCustomCounter (Long blockId) {
+		if (blockId.equals(0)) {
+			return CustomCounter.ITERATIONS_BLOCK_1;
+		} else if (blockId.equals(1)){
+			return CustomCounter.ITERATIONS_BLOCK_2;
+		} else if (blockId.equals(2)){
+			return CustomCounter.ITERATIONS_BLOCK_3;
+		} else if (blockId.equals(3)){
+			return CustomCounter.ITERATIONS_BLOCK_4;
+		} else if (blockId.equals(4)){
+			return CustomCounter.ITERATIONS_BLOCK_5;
+		} else if (blockId.equals(5)){
+			return CustomCounter.ITERATIONS_BLOCK_6;
+		} else if (blockId.equals(6)){
+			return CustomCounter.ITERATIONS_BLOCK_7;
+		} else if (blockId.equals(7)){
+			return CustomCounter.ITERATIONS_BLOCK_8;
+		} else if (blockId.equals(8)){
+			return CustomCounter.ITERATIONS_BLOCK_9;
+		} else if (blockId.equals(9)){
+			return CustomCounter.ITERATIONS_BLOCK_10;
+		} else {
+			return null;
+		}
 	}
 }

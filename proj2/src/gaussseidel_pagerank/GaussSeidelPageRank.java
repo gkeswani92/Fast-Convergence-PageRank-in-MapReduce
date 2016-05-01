@@ -24,14 +24,14 @@ public class GaussSeidelPageRank {
 		Integer passCount = 0;
 		String inputPath = "";
 		String outputPath = "";
+		Configuration conf = new Configuration();
+		conf.set("mapreduce.output.textoutputformat.separator", ";");
+		Job gaussSeidelJob = Job.getInstance(conf, "jacobi_pagerank");
 
 		do {
 
-			Configuration conf = new Configuration();
-			conf.set("mapreduce.output.textoutputformat.separator", ";");
-
 			System.out.println("Current Pass Count: " + passCount);
-			Job gaussSeidelJob = Job.getInstance(conf, "jacobi_pagerank");
+
 			gaussSeidelJob.setJobName("Gauss Seidel " + passCount);
 			gaussSeidelJob.setJarByClass(gaussseidel_pagerank.GaussSeidelPageRank.class);
 
@@ -77,5 +77,20 @@ public class GaussSeidelPageRank {
 
 			System.out.println("------------------------------------------------------------------------");
 		} while (averageResidualError > Constants.RESIDUAL_ERROR_THRESHOLD);
+		
+		Long avg = (gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_1).getValue() +
+				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_2).getValue()+
+				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_3).getValue()+
+				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_4).getValue()+
+				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_5).getValue()+
+				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_6).getValue()+
+				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_7).getValue()+
+				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_8).getValue()+
+				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_9).getValue()+
+				gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_10).getValue())/passCount;
+		
+		System.out.println("Average iterations count: " + avg);
+
+		
 	}
 }
