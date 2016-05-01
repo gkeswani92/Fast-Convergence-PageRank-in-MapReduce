@@ -110,7 +110,6 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 						+ Constants.DELIMITER + node.getEdges();
 				//logger.info("Emitting from reducer: " + outValue);
 				
-				// Text outKey = new Text(node.getNodeId().toString());
 				LongWritable outKey = new LongWritable(node.getNodeId());
 				context.write(outKey, new Text(outValue));
 			}
