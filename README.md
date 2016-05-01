@@ -15,7 +15,7 @@
 ### Input File Format
 ##### - Simple PageRank MapReduce Tasks
 ###### Source File: https://s3.amazonaws.com/cs5300s16-bi49-tmm259-gk368-p2/Simple_PageRank.txt
-		# For the Simple PageRank computation, we have a file called Simple_PageRank.txt which is created from edges.txt via simple_parser.py. It outputs a new format of <source_node> <dest_node> <PageRank Value> <Number of Outgoing Edges> where delimeter is space ' '
+		- For the Simple PageRank computation, we have a file called Simple_PageRank.txt which is created from edges.txt via simple_parser.py. It outputs a new format of <source_node> <dest_node> <PageRank Value> <Number of Outgoing Edges> where delimeter is space ' '
 
 ##### - Blocked PageRank MapReduce Tasks
 ###### Source File: https://s3.amazonaws.com/cs5300s16-bi49-tmm259-gk368-p2/Blocked_PageRank.txt
@@ -48,7 +48,7 @@
 		3) Average Residual Error's Updated Value is: 0.10070821
 		4) Average Residual Error's Updated Value is: 0.069692
 
-##### - Blocked PageRank - Average Residual Errors in Each MapReduce Pass	
+##### - Jacobi Blocked PageRank - Average Residual Errors in Each MapReduce Pass	
 		0) Average residual error after iteration 0: 2.806003712352941
 		1) Average residual error after iteration 1: 0.038160
 		2) Average residual error after iteration 2: 0.023614
@@ -56,6 +56,15 @@
 		4) Average residual error after iteration 4: 0.003799
 		5) Average residual error after iteration 5: 0.000974
 
+##### - Gauss Seidel Blocked PageRank - Average Residual Errors in Each MapReduce Pass	
+		0) Average residual error after iteration 0: 2.807087
+		1) Average residual error after iteration 1: 0.038735
+		2) Average residual error after iteration 2: 0.024959
+		3) Average residual error after iteration 3: 0.010955
+		4) Average residual error after iteration 4: 0.004942
+		5) Average residual error after iteration 5: 0.001870
+		6) Average residual error after iteration 6: 0.000808
+		
 ##### - Blocked PageRank With Random Partitioning - Average Residual Errors in Each MapReduce Pass	
 		0) Average residual error after iteration 0: 2.338398
 		1) Average residual error after iteration 1: 0.320930
