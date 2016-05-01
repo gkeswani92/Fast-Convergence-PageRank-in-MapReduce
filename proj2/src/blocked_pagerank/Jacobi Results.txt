@@ -1,0 +1,209 @@
+Jacobi Blocked Page Rank:
+
+Average of Block 0: 5.833 iterations
+Average of Block 1: 6.167 iterations
+Average of Block 2: 9.833 iterations
+Average of Block 3: 5.333 iterations
+Average of Block 4: 6.667 iterations
+Average of Block 5: 7.833 iterations
+Average of Block 6: 5.833 iterations
+Average of Block 7: 5.667 iterations
+Average of Block 8: 6.833 iterations
+Average of Block 9: 6.000 iterations
+Average of Block 10: 9.500 iterations
+Average of Block 11: 6.667 iterations
+Average of Block 12: 4.667 iterations
+Average of Block 13: 6.000 iterations
+Average of Block 14: 2.667 iterations
+Average of Block 15: 3.000 iterations
+Average of Block 16: 2.667 iterations
+Average of Block 17: 6.167 iterations
+Average of Block 18: 6.500 iterations
+Average of Block 19: 7.500 iterations
+Average of Block 20: 10.167 iterations
+Average of Block 21: 6.333 iterations
+Average of Block 22: 6.500 iterations
+Average of Block 23: 4.833 iterations
+Average of Block 24: 4.667 iterations
+Average of Block 25: 6.333 iterations
+Average of Block 26: 6.500 iterations
+Average of Block 27: 4.667 iterations
+Average of Block 28: 8.167 iterations
+Average of Block 29: 10.833 iterations
+Average of Block 30: 11.000 iterations
+Average of Block 31: 10.833 iterations
+Average of Block 32: 14.000 iterations
+Average of Block 33: 9.000 iterations
+Average of Block 34: 6.500 iterations
+Average of Block 35: 6.833 iterations
+Average of Block 36: 5.500 iterations
+Average of Block 37: 7.667 iterations
+Average of Block 38: 6.167 iterations
+Average of Block 39: 4.500 iterations
+Average of Block 40: 5.333 iterations
+Average of Block 41: 5.667 iterations
+Average of Block 42: 7.500 iterations
+Average of Block 43: 7.000 iterations
+Average of Block 44: 3.500 iterations
+Average of Block 45: 4.667 iterations
+Average of Block 46: 6.333 iterations
+Average of Block 47: 6.167 iterations
+Average of Block 48: 6.333 iterations
+Average of Block 49: 11.000 iterations
+Average of Block 50: 5.333 iterations
+Average of Block 51: 4.167 iterations
+Average of Block 52: 9.333 iterations
+Average of Block 53: 6.167 iterations
+Average of Block 54: 4.333 iterations
+Average of Block 55: 3.667 iterations
+Average of Block 56: 3.333 iterations
+Average of Block 57: 7.333 iterations
+Average of Block 58: 4.333 iterations
+Average of Block 59: 4.000 iterations
+Average of Block 60: 5.167 iterations
+Average of Block 61: 5.167 iterations
+Average of Block 62: 4.833 iterations
+Average of Block 63: 4.833 iterations
+Average of Block 64: 4.833 iterations
+Average of Block 65: 3.167 iterations
+Average of Block 66: 5.667 iterations
+Average of Block 67: 4.500 iterations
+
+Total average iterations for all blocks using Jacobi: 6.264705882352941
+
+Block: 0  Node ID: 0      Page Rank: 1.4501976620847241E-5
+Block: 0  Node ID: 1      Page Rank: 5.304988327015483E-5
+Block: 1  Node ID: 10328  Page Rank: 4.335996368731741E-7
+Block: 1  Node ID: 10329  Page Rank: 2.434979690420696E-7
+Block: 2  Node ID: 20373  Page Rank: 2.1890460137472089E-7
+Block: 2  Node ID: 20374  Page Rank: 2.1890460137472089E-7
+Block: 3  Node ID: 30629  Page Rank: 2.640904435172594E-7
+Block: 3  Node ID: 30630  Page Rank: 2.1890460137472089E-7
+Block: 4  Node ID: 40645  Page Rank: 2.196810711016847E-5
+Block: 4  Node ID: 40646  Page Rank: 2.196810711016847E-5
+Block: 5  Node ID: 50462  Page Rank: 0.005275099083757872
+Block: 5  Node ID: 50463  Page Rank: 0.005405415123097596
+Block: 6  Node ID: 60841  Page Rank: 1.1596771093409895E-5
+Block: 6  Node ID: 60842  Page Rank: 3.037398067297396E-6
+Block: 7  Node ID: 70591  Page Rank: 2.196810711016847E-5
+Block: 7  Node ID: 70592  Page Rank: 2.196810711016847E-5
+Block: 8  Node ID: 80119  Page Rank: 9.869337490665268E-7
+Block: 8  Node ID: 80120  Page Rank: 8.131089311003053E-7
+Block: 9  Node ID: 90497  Page Rank: 9.120241436381751E-7
+Block: 9  Node ID: 90498  Page Rank: 1.1525029552936084E-5
+Block: 10 Node ID: 100501 Page Rank: 1.0205406348191643E-6
+Block: 10 Node ID: 100502 Page Rank: 1.2418792487553472E-6
+Block: 11 Node ID: 110567 Page Rank: 0.0010396194525063383
+Block: 11 Node ID: 110568 Page Rank: 9.919193091272177E-5
+Block: 12 Node ID: 120945 Page Rank: 8.307805323883279E-7
+Block: 12 Node ID: 120946 Page Rank: 6.908492903925219E-7
+Block: 13 Node ID: 130999 Page Rank: 2.287235965730013E-7
+Block: 13 Node ID: 131000 Page Rank: 2.287235965730013E-7
+Block: 14 Node ID: 140574 Page Rank: 0.001077193299134865
+Block: 14 Node ID: 140575 Page Rank: 2.284770330971243E-7
+Block: 15 Node ID: 150953 Page Rank: 0.0010211590355305976
+Block: 15 Node ID: 150954 Page Rank: 0.0021743861513896213
+Block: 16 Node ID: 161332 Page Rank: 2.2855318884396009E-7
+Block: 16 Node ID: 161333 Page Rank: 2.2855318884396009E-7
+Block: 17 Node ID: 171154 Page Rank: 2.2913728279051707E-7
+Block: 17 Node ID: 171155 Page Rank: 2.2913728279051707E-7
+Block: 18 Node ID: 181514 Page Rank: 2.243351457729522E-7
+Block: 18 Node ID: 181515 Page Rank: 7.439638278820458E-4
+Block: 19 Node ID: 191625 Page Rank: 2.8411445048157644E-4
+Block: 19 Node ID: 191626 Page Rank: 2.1890460137472089E-7
+Block: 20 Node ID: 202004 Page Rank: 9.306676236193025E-7
+Block: 20 Node ID: 202005 Page Rank: 9.869906188223314E-7
+Block: 21 Node ID: 212383 Page Rank: 0.0012588017532741552
+Block: 21 Node ID: 212384 Page Rank: 2.1890460137472089E-7
+Block: 22 Node ID: 222762 Page Rank: 2.2866523638471948E-7
+Block: 22 Node ID: 222763 Page Rank: 2.2866523638471948E-7
+Block: 23 Node ID: 232593 Page Rank: 2.375365289754462E-7
+Block: 23 Node ID: 232594 Page Rank: 2.7304686261131964E-7
+Block: 24 Node ID: 242878 Page Rank: 1.0668835123188052E-6
+Block: 24 Node ID: 242879 Page Rank: 6.04600483532989E-7
+Block: 25 Node ID: 252938 Page Rank: 5.974164666019328E-6
+Block: 25 Node ID: 252939 Page Rank: 5.791544228401522E-7
+Block: 26 Node ID: 263149 Page Rank: 1.634935961717381E-5
+Block: 26 Node ID: 263150 Page Rank: 2.0548216977075466E-6
+Block: 27 Node ID: 273210 Page Rank: 2.7911792882284616E-5
+Block: 27 Node ID: 273211 Page Rank: 2.4800604217906782E-6
+Block: 28 Node ID: 283492 Page Rank: 2.888562448931899E-7
+Block: 28 Node ID: 283493 Page Rank: 1.6459267462281303E-6
+Block: 29 Node ID: 293255 Page Rank: 2.7188645773866672E-6
+Block: 29 Node ID: 293256 Page Rank: 1.1879905246906389E-5
+Block: 30 Node ID: 303043 Page Rank: 1.0663251510698539E-6
+Block: 30 Node ID: 303044 Page Rank: 5.69222498307594E-6
+Block: 31 Node ID: 313370 Page Rank: 2.5489449669483937E-7
+Block: 31 Node ID: 313371 Page Rank: 2.3620165628958788E-5
+Block: 32 Node ID: 323522 Page Rank: 5.680689456521207E-7
+Block: 32 Node ID: 323523 Page Rank: 1.9353377707744125E-6
+Block: 33 Node ID: 333883 Page Rank: 2.029147251484531E-5
+Block: 33 Node ID: 333884 Page Rank: 4.470138773166331E-6
+Block: 34 Node ID: 343663 Page Rank: 2.305122426090921E-6
+Block: 34 Node ID: 343664 Page Rank: 3.65208248880505E-7
+Block: 35 Node ID: 353646 Page Rank: 9.501756169587024E-7
+Block: 35 Node ID: 353647 Page Rank: 4.349352047603532E-6
+Block: 36 Node ID: 363929 Page Rank: 1.4341831377757323E-5
+Block: 36 Node ID: 363930 Page Rank: 4.6631381699461374E-7
+Block: 37 Node ID: 374236 Page Rank: 2.3922929314199124E-7
+Block: 37 Node ID: 374237 Page Rank: 9.239766141969E-6
+Block: 38 Node ID: 384554 Page Rank: 6.439945419388612E-5
+Block: 38 Node ID: 384555 Page Rank: 5.191493953007018E-6
+Block: 39 Node ID: 394929 Page Rank: 4.156326681721551E-6
+Block: 39 Node ID: 394930 Page Rank: 2.5768285486480347E-6
+Block: 40 Node ID: 404712 Page Rank: 7.067209909300036E-7
+Block: 40 Node ID: 404713 Page Rank: 8.130217019372084E-7
+Block: 41 Node ID: 414617 Page Rank: 3.7004729544201937E-7
+Block: 41 Node ID: 414618 Page Rank: 3.7004729544201937E-7
+Block: 42 Node ID: 424747 Page Rank: 1.939713903234723E-6
+Block: 42 Node ID: 424748 Page Rank: 4.384596433774146E-6
+Block: 43 Node ID: 434707 Page Rank: 5.206327911971795E-7
+Block: 43 Node ID: 434708 Page Rank: 3.2744380473563057E-6
+Block: 44 Node ID: 444489 Page Rank: 4.6570084330838154E-7
+Block: 44 Node ID: 444490 Page Rank: 2.39738603497882E-7
+Block: 45 Node ID: 454285 Page Rank: 3.52491595718365E-7
+Block: 45 Node ID: 454286 Page Rank: 3.1863897659284026E-7
+Block: 46 Node ID: 464398 Page Rank: 4.61386842360818E-7
+Block: 46 Node ID: 464399 Page Rank: 4.61386842360818E-7
+Block: 47 Node ID: 474196 Page Rank: 5.314476401712595E-7
+Block: 47 Node ID: 474197 Page Rank: 8.415449894584053E-7
+Block: 48 Node ID: 484050 Page Rank: 1.6528024939317757E-5
+Block: 48 Node ID: 484051 Page Rank: 1.2433581165133424E-5
+Block: 49 Node ID: 493968 Page Rank: 7.963571935557455E-7
+Block: 49 Node ID: 493969 Page Rank: 1.3892482698481373E-6
+Block: 50 Node ID: 503752 Page Rank: 7.909787420081567E-7
+Block: 50 Node ID: 503753 Page Rank: 7.909787420081567E-7
+Block: 51 Node ID: 514131 Page Rank: 0.0011160251402292317
+Block: 51 Node ID: 514132 Page Rank: 2.6672426609245564E-5
+Block: 52 Node ID: 524510 Page Rank: 8.605976340386568E-4
+Block: 52 Node ID: 524511 Page Rank: 6.512111894525243E-5
+Block: 53 Node ID: 534709 Page Rank: 0.009138915151778039
+Block: 53 Node ID: 534710 Page Rank: 4.536463399365877E-6
+Block: 54 Node ID: 545088 Page Rank: 0.0017749830453795683
+Block: 54 Node ID: 545089 Page Rank: 3.397687134778407E-5
+Block: 55 Node ID: 555467 Page Rank: 0.0018386815309452452
+Block: 55 Node ID: 555468 Page Rank: 7.557064071015638E-7
+Block: 56 Node ID: 565846 Page Rank: 2.1890460137472089E-7
+Block: 56 Node ID: 565847 Page Rank: 2.1890460137472089E-7
+Block: 57 Node ID: 576225 Page Rank: 1.1532032116006564E-5
+Block: 57 Node ID: 576226 Page Rank: 2.1890460137472089E-7
+Block: 58 Node ID: 586604 Page Rank: 3.906874508350674E-4
+Block: 58 Node ID: 586605 Page Rank: 4.2889635180936506E-7
+Block: 59 Node ID: 596585 Page Rank: 1.3315659953126192E-6
+Block: 59 Node ID: 596586 Page Rank: 1.3878058043161398E-6
+Block: 60 Node ID: 606367 Page Rank: 3.166709959851151E-7
+Block: 60 Node ID: 606368 Page Rank: 2.2492825528646362E-7
+Block: 61 Node ID: 616148 Page Rank: 9.830758777624129E-7
+Block: 61 Node ID: 616149 Page Rank: 4.312231139098447E-7
+Block: 62 Node ID: 626448 Page Rank: 2.1890460137472089E-7
+Block: 62 Node ID: 626449 Page Rank: 2.5839554187923826E-7
+Block: 63 Node ID: 636240 Page Rank: 2.286815160382686E-7
+Block: 63 Node ID: 636241 Page Rank: 2.287235965730013E-7
+Block: 64 Node ID: 646022 Page Rank: 5.682029671406778E-7
+Block: 64 Node ID: 646023 Page Rank: 4.1093847629995806E-7
+Block: 65 Node ID: 655804 Page Rank: 2.286815160382686E-7
+Block: 65 Node ID: 655805 Page Rank: 2.1890460137472089E-7
+Block: 66 Node ID: 665666 Page Rank: 2.5611838360842345E-7
+Block: 66 Node ID: 665667 Page Rank: 4.0142481981186924E-7
+Block: 67 Node ID: 675448 Page Rank: 2.1890460137472089E-7
+Block: 67 Node ID: 675449 Page Rank: 4.905029211237358E-6
