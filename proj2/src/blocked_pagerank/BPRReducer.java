@@ -124,13 +124,15 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			String counterName = "ITERATIONS_BLOCK_" + (Integer.parseInt(key.toString())+1);
 			Counter counter = context.getCounter(CustomCounter.valueOf(counterName));
 			counter.increment(numIterations);
-
 			cleanup(context);
-			
-//			logger.info("");
-//			logger.info("Number of iterations in block " + key + " to coverge: " + numIterations);
-//			logger.info("Page Rank of Node 0 i.e. Node ID : " + allNodes.get(minNodes.get("minimum")).getNodeId().toString() + " in block "+ key + " is :" + allNodes.get(minNodes.get("minimum")).getPageRank().toString());
-//			logger.info("Page Rank of Node 1 i.e. Node ID : " + allNodes.get(minNodes.get("second_minimum")).getNodeId().toString() + " in block "+ key + " is :" + allNodes.get(minNodes.get("second_minimum")).getPageRank().toString());
+	
+			logger.info("Block: " + key +
+						" Node ID: " + allNodes.get(minNodes.get("minimum")).getNodeId().toString() + 
+						" Page Rank: " + allNodes.get(minNodes.get("minimum")).getPageRank().toString());
+		
+			logger.info("Block: " + key +
+						" Node ID: " + allNodes.get(minNodes.get("second_minimum")).getNodeId().toString() + 
+						" Page Rank: " + allNodes.get(minNodes.get("second_minimum")).getPageRank().toString());
 		}
 	}
 	

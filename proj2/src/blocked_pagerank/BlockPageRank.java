@@ -26,13 +26,19 @@ public class BlockPageRank {
 		Integer passCount = 0;
 		String inputPath = "";
 		String outputPath = "";
+		
+		// Map Reduce configuration
 		Configuration conf = new Configuration();
 		conf.set("mapreduce.output.textoutputformat.separator", ";");
 		Job bprJob = null;
-		List<Long> blockIterations = new ArrayList<Long>();
-		Long totalAvgIterations = 0L;
-
 		
+		// Keeping track of number of iterations per block over all passes
+		List<Long> blockIterations = new ArrayList<Long>();
+		Long totalAvgIterations = 0L;		
+		for(int i=0; i<68; i++){
+			blockIterations.add(0l);
+		}
+
 		do {
 			System.out.println("Current Pass Count: " + passCount);
 			bprJob = Job.getInstance(conf, "blocked_pagerank");
@@ -60,14 +66,14 @@ public class BlockPageRank {
 			
 			// Get the current residual error
 			residualError = (double) bprJob.getCounters().findCounter(CustomCounter.RESIDUAL_ERROR).getValue();
-			System.out.println("Residual error after map reduce iteration is: "+residualError);
+			//System.out.println("Residual error after map reduce iteration is: "+residualError);
 			
 			// Convert residual error back to double and divide by number of blocks to get average
 			actualResidualError = residualError / Constants.COUNTER_FACTOR;
-			System.out.println("Actual residual error with counter factor: "+actualResidualError);
+			//System.out.println("Actual residual error with counter factor: "+actualResidualError);
 			
 			averageResidualError = actualResidualError / Constants.NUM_BLOCKS;
-			System.out.println("Average residual error with num blocks: "+averageResidualError);
+			//System.out.println("Average residual error with num blocks: "+averageResidualError);
 			
 			System.out.println("Final Residual error for iteration " + passCount 
 					+ ": " + String.format("%.6f", averageResidualError));
@@ -78,6 +84,7 @@ public class BlockPageRank {
 			c1.setValue(0L);
 			passCount++;
 			
+			// Adding the number of iterations of each block in the current map reduce pass
 			for (int i = 0 ; i < Constants.NUM_BLOCKS; i++) {
 				String counterName = "ITERATIONS_BLOCK_" + (i+1);
 				Counter counter = bprJob.getCounters().findCounter(CustomCounter.valueOf(counterName));
@@ -87,11 +94,11 @@ public class BlockPageRank {
 			System.out.println("------------------------------------------------------------------------");
 		} while(averageResidualError > Constants.RESIDUAL_ERROR_THRESHOLD);
 				
+		// Displaying iterations per block and then average of all blocks
 		for (int i = 0; i < Constants.NUM_BLOCKS; i++) {
-			System.out.println("Average iterations for block " + i + ": " + (blockIterations.get(i)*1.000/passCount));
+			System.out.println("Average of Block " + i + ": " + String.format("%.3f", (blockIterations.get(i)*1.00/passCount)) + " iterations");
 			totalAvgIterations += blockIterations.get(i);
 		}
-		
-		System.out.println("Total average iterations for all blocks: " + (totalAvgIterations*1.0000/passCount));
+		System.out.println("Total average iterations for all blocks using Jacobi: " + ((totalAvgIterations*1.0000)/(68*passCount)));
 	}
 }

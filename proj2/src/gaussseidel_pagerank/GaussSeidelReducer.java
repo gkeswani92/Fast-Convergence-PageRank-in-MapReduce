@@ -6,10 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.Counters;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.log4j.Logger;
@@ -83,8 +81,7 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 				// logger.info("Inside boundary condition");
 
 				// Maintains a mapping of the collective page rank coming in to
-				// a node
-				// from all other nodes of different blocks
+				// a node from all other nodes of different blocks
 				if (!boundaryConditions.containsKey(input[2])) {
 					boundaryConditions.put(input[2], 0.0);
 				}
@@ -126,8 +123,8 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 
 			// Convert residual value to long to store into counter
 			Long residualValue = (long) (residualError * Constants.COUNTER_FACTOR);
-			//logger.info("Value being written to counter is " + residualValue);
 			context.getCounter(CustomCounter.RESIDUAL_ERROR).increment(residualValue);
+			//logger.info("Value being written to counter is " + residualValue);
 			
 			String counterName = "ITERATIONS_BLOCK_" + (Integer.parseInt(key.toString())+1);
 			Counter counter = context.getCounter(CustomCounter.valueOf(counterName));
@@ -136,14 +133,13 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 
 			// logger.info("");
 			// logger.info("Number of iterations in block " + key + " to coverge: " + numIterations);
-			// logger.info("Page Rank of Node 0 i.e. Node ID : " +
-			// allNodes.get(minNodes.get("minimum")).getNodeId().toString() + "
-			// in block "+ key + " is :" +
-			// allNodes.get(minNodes.get("minimum")).getPageRank().toString());
-			// logger.info("Page Rank of Node 1 i.e. Node ID : " +
-			// allNodes.get(minNodes.get("second_minimum")).getNodeId().toString()
-			// + " in block "+ key + " is :" +
-			// allNodes.get(minNodes.get("second_minimum")).getPageRank().toString());
+			logger.info("Block: " + key +
+						" Node ID: " + allNodes.get(minNodes.get("minimum")).getNodeId().toString() + 
+						" Page Rank: " + allNodes.get(minNodes.get("minimum")).getPageRank().toString());
+			
+			logger.info("Block: " + key +
+						" Node ID: " + allNodes.get(minNodes.get("second_minimum")).getNodeId().toString() + 
+						" Page Rank: " + allNodes.get(minNodes.get("second_minimum")).getPageRank().toString());
 		}
 	}
 
