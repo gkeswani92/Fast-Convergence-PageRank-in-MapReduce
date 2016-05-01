@@ -91,11 +91,11 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 		if (!allNodes.isEmpty()) {
 			int numIterations = 0;
 			Double residualError = Double.MAX_VALUE;
-
+			
 			// Iterate over block until error < threshold or numIterations >
 			// custom limit
 			while (numIterations < Constants.MAX_ITERATIONS && residualError > Constants.RESIDUAL_ERROR_THRESHOLD) {
-				residualError = iterateBlockOnce(allNodes, newPageRank, blockEdges, boundaryConditions);
+				residualError = iterateBlockOnce(allNodes, newPageRank, blockEdges, boundaryConditions, backUpPageRank);
 				numIterations++;
 			}
 			// logger.info("In block residual error is " + residualError);
@@ -111,6 +111,7 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 			// logger.info("Average residual error is " + residualError);
 
 			for (Node node : allNodes.values()) {
+				// logger.info("Emitting from reducer node ID: " + node.getNodeId() + " Page Rank: "+newPageRank.get(node.getNodeId()));
 				String outValue = node.getNodeId() + Constants.DELIMITER + newPageRank.get(node.getNodeId())
 						+ Constants.DELIMITER + node.getEdges();
 				// logger.info("Emitting from reducer: " + outValue);
@@ -121,13 +122,12 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 
 			// Convert residual value to long to store into counter
 			Long residualValue = (long) (residualError * Constants.COUNTER_FACTOR);
-			// logger.info("Value being written to counter is " +
-			// residualValue);
+			//logger.info("Value being written to counter is " + residualValue);
 			context.getCounter(CustomCounter.RESIDUAL_ERROR).increment(residualValue);
 			cleanup(context);
 
-			logger.info("");
-			logger.info("Number of iterations in block " + key + " to coverge: " + numIterations);
+			// logger.info("");
+			// logger.info("Number of iterations in block " + key + " to coverge: " + numIterations);
 			// logger.info("Page Rank of Node 0 i.e. Node ID : " +
 			// allNodes.get(minNodes.get("minimum")).getNodeId().toString() + "
 			// in block "+ key + " is :" +
@@ -140,15 +140,14 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 	}
 
 	private Double iterateBlockOnce(Map<Long, Node> allNodes, Map<Long, Double> newPageRank,
-			Map<String, List<String>> blockEdges, Map<String, Double> boundaryConditions) {
+			Map<String, List<String>> blockEdges, Map<String, Double> boundaryConditions,
+			Map<Long, Double> backUpPageRank) {
 
 		Double residualError = 0.0;
 
 		for (Node node : allNodes.values()) {
-			// logger.info("Current node id: "+node.getNodeId());
+			//logger.info("Current node id: "+node.getNodeId());
 
-			// Get the old page rank from the past run's page rank
-			Double oldPR = newPageRank.get(node.getNodeId());
 			Double newPR = 0.0;
 
 			// Add page rank to current node if it has incoming edges
@@ -157,12 +156,12 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 				// logger.info(node.getNodeId() + " has incoming edges");
 
 				for (String edge : blockEdges.get(node.getNodeId().toString())) {
-					// logger.info(node.getNodeId() + " has an incoming edge
-					// from "+edge);
+					//logger.info(node.getNodeId() + " has an incoming edge from "+edge);
 
-					// Get the source node of the incoming edge and
-					// calculate its page rank contribution to mine
+					// Get the source node of the incoming edge and calculate its page rank contribution to mine
 					Node n = getNodeFromId(allNodes, edge);
+					//logger.info("Using page rank value of incoming edge: " + newPageRank.get(Long.parseLong(edge)) 
+					//				+ "for calculating new PR of " + node.getNodeId());
 					newPR += newPageRank.get(Long.parseLong(edge)) / n.getDegree();
 				}
 			}
@@ -170,8 +169,8 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 			// Add page rank to current node if it has incoming edges
 			// from other nodes in the other block
 			if (boundaryConditions.containsKey(node.getNodeId().toString())) {
-				// logger.info(node.getNodeId() + " has an incoming edge from
-				// outside the block from node");
+				//logger.info(node.getNodeId() + " has an incoming edge from outside the block with PR: " 
+				//				+ boundaryConditions.get(node.getNodeId().toString()));
 				newPR += boundaryConditions.get(node.getNodeId().toString());
 			}
 
@@ -179,12 +178,12 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 			newPR = (newPR * Constants.DAMPING_FACTOR) + (0.15 / Constants.NUM_NODES);
 			// logger.info("New Page Rank after damping: " + newPR);
 			newPageRank.put(node.getNodeId(), newPR);
-			residualError += Math.abs(newPR - oldPR) / newPR;
-
-			// logger.info("Node ID:" + node.getNodeId().toString() + " Old Page
-			// Rank: " + oldPR + " New Page Rank: " + newPR);
+			residualError += Math.abs(newPR - backUpPageRank.get(node.getNodeId())) / newPR;
+			//logger.info("Node ID:" + node.getNodeId().toString() + " New Page Rank: " + newPR + "Residual Error: "+residualError);	
 		}
 
+		backUpPageRank.clear();
+		backUpPageRank.putAll(newPageRank);
 		residualError = residualError / allNodes.size();
 		return residualError;
 	}
