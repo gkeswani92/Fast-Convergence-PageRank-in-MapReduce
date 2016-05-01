@@ -9,6 +9,8 @@ import java.util.TreeMap;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.Counters;
+import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.log4j.Logger;
 
@@ -127,10 +129,9 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 			//logger.info("Value being written to counter is " + residualValue);
 			context.getCounter(CustomCounter.RESIDUAL_ERROR).increment(residualValue);
 			
-			CustomCounter cc = getCustomCounter(Long.parseLong(key.toString()));
-			if (cc != null) {
-				context.getCounter(cc).increment(numIterations);
-			}
+			String counterName = "ITERATIONS_BLOCK_" + (Integer.parseInt(key.toString())+1);
+			Counter counter = context.getCounter(CustomCounter.valueOf(counterName));
+			counter.increment(numIterations);
 			cleanup(context);
 
 			// logger.info("");
@@ -200,31 +201,5 @@ public class GaussSeidelReducer extends Reducer<LongWritable, Text, LongWritable
 			return allNodes.get(Long.parseLong(node));
 		}
 		return null;
-	}
-	
-	public CustomCounter getCustomCounter (Long blockId) {
-		if (blockId.equals((long)0)) {
-			return CustomCounter.ITERATIONS_BLOCK_1;
-		} else if (blockId.equals((long)1)){
-			return CustomCounter.ITERATIONS_BLOCK_2;
-		} else if (blockId.equals((long)2)){
-			return CustomCounter.ITERATIONS_BLOCK_3;
-		} else if (blockId.equals((long)3)){
-			return CustomCounter.ITERATIONS_BLOCK_4;
-		} else if (blockId.equals((long)4)){
-			return CustomCounter.ITERATIONS_BLOCK_5;
-		} else if (blockId.equals((long)5)){
-			return CustomCounter.ITERATIONS_BLOCK_6;
-		} else if (blockId.equals((long)6)){
-			return CustomCounter.ITERATIONS_BLOCK_7;
-		} else if (blockId.equals((long)7)){
-			return CustomCounter.ITERATIONS_BLOCK_8;
-		} else if (blockId.equals((long)8)){
-			return CustomCounter.ITERATIONS_BLOCK_9;
-		} else if (blockId.equals((long)9)){
-			return CustomCounter.ITERATIONS_BLOCK_10;
-		} else {
-			return null;
-		}
 	}
 }

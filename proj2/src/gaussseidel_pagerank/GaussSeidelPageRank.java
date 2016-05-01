@@ -1,5 +1,8 @@
 package gaussseidel_pagerank;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
@@ -9,6 +12,7 @@ import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
 import utils.CustomCounter;
 import utils.Constants;
 import blocked_pagerank.BPRMapper;
@@ -28,6 +32,8 @@ public class GaussSeidelPageRank {
 		conf.set("mapreduce.output.textoutputformat.separator", ";");
 		Job gaussSeidelJob = null;
 		Long iterations = (long) 0;
+		List<Long> blockIterations = new ArrayList<Long>();
+		Long totalAvgIterations = 0L;
 
 		do {
 
@@ -76,23 +82,22 @@ public class GaussSeidelPageRank {
 			c1.setValue(0L);
 			passCount++;
 			
-			iterations += (gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_1).getValue() +
-					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_2).getValue()+
-					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_3).getValue()+
-					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_4).getValue()+
-					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_5).getValue()+
-					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_6).getValue()+
-					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_7).getValue()+
-					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_8).getValue()+
-					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_9).getValue()+
-					gaussSeidelJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_10).getValue());
+			for (int i = 0 ; i < Constants.NUM_BLOCKS; i++) {
+				String counterName = "ITERATIONS_BLOCK_" + (i+1);
+				Counter counter = gaussSeidelJob.getCounters().findCounter(CustomCounter.valueOf(counterName));
+				blockIterations.set(i, blockIterations.get(i) + counter.getValue());
+			}
 			
 			System.out.println("Number of iterations: "+iterations);
 			System.out.println("------------------------------------------------------------------------");
 		} while (averageResidualError > Constants.RESIDUAL_ERROR_THRESHOLD);
 		
-		Double avg = iterations * 1.000000 /passCount;
-		System.out.println("Average iterations count for Gauss Seidel: " + avg);
+		for (int i = 0; i < Constants.NUM_BLOCKS; i++) {
+			System.out.println("Average iterations for block " + i + ": " + (blockIterations.get(i)*1.000/passCount));
+			totalAvgIterations += blockIterations.get(i);
+		}
+		
+		System.out.println("Total average iterations for all blocks: " + (totalAvgIterations*1.0000/passCount));
 
 		
 	}

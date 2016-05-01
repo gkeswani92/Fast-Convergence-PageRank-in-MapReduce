@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.log4j.Logger;
 
@@ -118,10 +120,10 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			Long residualValue = (long) (residualError * Constants.COUNTER_FACTOR);
 			//logger.info("Value being written to counter is " + residualValue);
 			context.getCounter(CustomCounter.RESIDUAL_ERROR).increment(residualValue);
-			CustomCounter cc = getCustomCounter(Long.parseLong(key.toString()));
-			if (cc != null) {
-				context.getCounter(cc).increment(numIterations);
-			}
+			
+			String counterName = "ITERATIONS_BLOCK_" + (Integer.parseInt(key.toString())+1);
+			Counter counter = context.getCounter(CustomCounter.valueOf(counterName));
+			counter.increment(numIterations);
 
 			cleanup(context);
 			
@@ -186,31 +188,5 @@ public class BPRReducer extends Reducer<LongWritable, Text, LongWritable, Text> 
 			return allNodes.get(Long.parseLong(node));
 		}
 		return null;
-	}
-	
-	public CustomCounter getCustomCounter (Long blockId) {
-		if (blockId.equals(0l)) {
-			return CustomCounter.ITERATIONS_BLOCK_1;
-		} else if (blockId.equals(1l)){
-			return CustomCounter.ITERATIONS_BLOCK_2;
-		} else if (blockId.equals(2l)){
-			return CustomCounter.ITERATIONS_BLOCK_3;
-		} else if (blockId.equals(3l)){
-			return CustomCounter.ITERATIONS_BLOCK_4;
-		} else if (blockId.equals(4l)){
-			return CustomCounter.ITERATIONS_BLOCK_5;
-		} else if (blockId.equals(5l)){
-			return CustomCounter.ITERATIONS_BLOCK_6;
-		} else if (blockId.equals(6l)){
-			return CustomCounter.ITERATIONS_BLOCK_7;
-		} else if (blockId.equals(7l)){
-			return CustomCounter.ITERATIONS_BLOCK_8;
-		} else if (blockId.equals(8l)){
-			return CustomCounter.ITERATIONS_BLOCK_9;
-		} else if (blockId.equals(9l)){
-			return CustomCounter.ITERATIONS_BLOCK_10;
-		} else {
-			return null;
-		}
 	}
 }

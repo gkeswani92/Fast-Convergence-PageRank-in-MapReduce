@@ -1,5 +1,8 @@
 package blocked_pagerank;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
@@ -23,10 +26,11 @@ public class BlockPageRank {
 		Integer passCount = 0;
 		String inputPath = "";
 		String outputPath = "";
-		Long iterations = (long)0;
 		Configuration conf = new Configuration();
 		conf.set("mapreduce.output.textoutputformat.separator", ";");
 		Job bprJob = null;
+		List<Long> blockIterations = new ArrayList<Long>();
+		Long totalAvgIterations = 0L;
 
 		
 		do {
@@ -74,22 +78,20 @@ public class BlockPageRank {
 			c1.setValue(0L);
 			passCount++;
 			
-			iterations += (bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_1).getValue() +
-							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_2).getValue()+
-							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_3).getValue()+
-							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_4).getValue()+
-							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_5).getValue()+
-							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_6).getValue()+
-							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_7).getValue()+
-							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_8).getValue()+
-							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_9).getValue()+
-							bprJob.getCounters().findCounter(CustomCounter.ITERATIONS_BLOCK_10).getValue());
-			System.out.println("Number of iterations: "+iterations);
+			for (int i = 0 ; i < Constants.NUM_BLOCKS; i++) {
+				String counterName = "ITERATIONS_BLOCK_" + (i+1);
+				Counter counter = bprJob.getCounters().findCounter(CustomCounter.valueOf(counterName));
+				blockIterations.set(i, blockIterations.get(i) + counter.getValue());
+			}
 			
 			System.out.println("------------------------------------------------------------------------");
 		} while(averageResidualError > Constants.RESIDUAL_ERROR_THRESHOLD);
+				
+		for (int i = 0; i < Constants.NUM_BLOCKS; i++) {
+			System.out.println("Average iterations for block " + i + ": " + (blockIterations.get(i)*1.000/passCount));
+			totalAvgIterations += blockIterations.get(i);
+		}
 		
-		Double avg = iterations * 1.00000 / passCount;
-		System.out.println("Average iterations count for Jacobi: " + avg);
+		System.out.println("Total average iterations for all blocks: " + (totalAvgIterations*1.0000/passCount));
 	}
 }
